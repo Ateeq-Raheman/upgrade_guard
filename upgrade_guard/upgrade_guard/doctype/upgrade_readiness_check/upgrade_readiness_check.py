@@ -43,13 +43,14 @@ def run_scan_job(name, user):
 			{
 				"status": "Completed", "verdict": res["verdict"], "score": res["score"], "estimated_hours": res["estimated_hours"],
 				"blockers": sc["blocker"], "high": sc["high"], "medium": sc["medium"], "low": sc["low"], "info": sc["info"],
-				"summary_html": render_html(res), "warnings": "\n".join(res["warnings"]) + (f"\nOnly the first {MAX_ROWS} findings are listed; download the JSON for the full list." if len(res["findings"]) > MAX_ROWS else ""),
+				"summary_data": render_html(res), "warnings": "\n".join(res["warnings"]) + (f"\nOnly the first {MAX_ROWS} findings are listed; download the JSON for the full list." if len(res["findings"]) > MAX_ROWS else ""),
 				"scanned_at": now_datetime(),
 			}
 		)
 		doc.save(ignore_permissions=True)
-		f = frappe.get_doc({"doctype": "File", "file_name": f"{name}.json", "attached_to_doctype": doc.doctype, "attached_to_name": name, "content": json.dumps(res, default=str), "is_private": 1})
-		f.save(ignore_permissions=True)
+		from upgrade_guard.engine import storage
+
+		storage.save_json(doc.doctype, name, "scan.json", res)
 		progress(100, "Done")
 	except Exception:
 		frappe.db.rollback()
@@ -86,3 +87,27 @@ def apply_fixes(name, include_unsafe=0):
 	plan = _plan(name, include_unsafe)
 	bdir = apply_plan(plan)
 	return {"backup": bdir, "summary": plan.summary()}
+
+
+@frappe.whitelist()
+def get_runbook(name, cloud=1):
+	"""Tailored runbook as markdown. cloud=1 gives the no-shell (Frappe Cloud) version."""
+	frappe.only_for("System Manager")
+	from upgrade_guard.engine import runbook
+
+	doc = frappe.get_doc("Upgrade Readiness Check", name)
+	s, t = int(doc.source_version), int(doc.target_version)
+	return runbook.build_cloud(s, t) if int(cloud) else runbook.build(s, t)
+
+
+@frappe.whitelist()
+def get_report(name, fmt="html"):
+	"""Rendered report (html | md | json) of the last completed scan."""
+	frappe.only_for("System Manager")
+	from upgrade_guard.engine import storage
+	from upgrade_guard.engine.report import render
+
+	res = storage.load_json("Upgrade Readiness Check", name, "scan.json")
+	if fmt == "json":
+		return json.dumps(res, indent=1, default=str)
+	return render(res, "html" if fmt == "html" else "md")

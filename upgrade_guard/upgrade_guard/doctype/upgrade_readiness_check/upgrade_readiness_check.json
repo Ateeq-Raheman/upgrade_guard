@@ -153,6 +153,13 @@
    "fieldtype": "HTML"
   },
   {
+   "fieldname": "summary_data",
+   "label": "Summary data",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
    "fieldname": "warnings",
    "label": "Warnings",
    "fieldtype": "Small Text",

@@ -60,3 +60,37 @@ def build(source, target):
 		f"```\nbench switch-to-branch version-{source} {' '.join(versioned)} --upgrade\nbench --site {site} --force restore <backup.sql.gz> --with-private-files <private.tar> --with-public-files <public.tar>\nbench setup requirements && bench build && bench restart\n```",
 		"Keep the previous Python/Node available until the upgrade is signed off."]
 	return "\n".join(L)
+
+
+def build_cloud(source, target):
+	"""Runbook for people without shell access (Frappe Cloud): everything via Desk + dashboard."""
+	site = frappe.local.site
+	apps = frappe.get_installed_apps()
+	custom = [a for a in apps if a not in OFFICIAL_APPS]
+	rows = "\n".join(f"| {a} | {_branch(os.path.dirname(frappe.get_app_path(a)))} | {'official' if a in OFFICIAL_APPS else 'custom'} |" for a in apps)
+	L = [f"# Upgrade runbook (no shell): `{site}` v{source} → v{target}", "",
+		"Everything below uses Desk and the Frappe Cloud dashboard. **Rehearse on a cloned staging site first.**", "",
+		"## 0. Current state", "| App | Branch | Type |", "|---|---|---|", rows, "",
+		"## 1. Fix before upgrading",
+		"1. Desk → **Upgrade Readiness Check** → open your check → **Run scan**.",
+		"2. Fix every **blocker** and **high** finding (Findings table; filter by severity).",
+		"3. **Fix → Preview auto-fixes** shows safe changes as a diff. Apply them in each app's git repo and push.",
+		"4. Re-run the scan until the verdict is GO or GO WITH FIXES with nothing left in blocker/high.",
+		"(Python/Node version findings can be ignored on Frappe Cloud; the platform manages them.)", ""]
+	for a in custom:
+		L.append(f"- `{a}`: its `pyproject.toml` must allow `frappe>={target}.0.0-dev,<{target + 1}.0.0`, and the {target} branch must exist in your bench group.")
+	L += ["", "## 2. Baseline snapshot (before)",
+		"Desk → **Upgrade Snapshot** → New → *Take snapshot* (name it e.g. `before v%d`). Add important reports in *Reports to run*, one per line, like `General Ledger::{\"company\": \"My Co\"}`." % target, "",
+		"## 3. Backup",
+		"Frappe Cloud dashboard → your site → **Backups** → take a fresh backup, download it, and restore it once onto a scratch site to prove it works.", "",
+		"## 4. Rehearse the upgrade on staging",
+		f"Clone the site, then on the *clone* use the dashboard's site action for a version upgrade to v{target} (named **Version Upgrade** or **Change bench**). The target bench group must contain v{target} of frappe/erpnext/hrms and your fixed custom apps.",
+		"Read the migration log in the dashboard (Site → Jobs). Any failure names the app and file; fix it, restore the clone, and retry.", "",
+		"## 5. Verify (after)",
+		"On the upgraded clone: Desk → **Upgrade Snapshot** → *Take snapshot* (`after v%d`), then **Compare…** against the *before* snapshot. Regressions are listed first." % target,
+		"Then click through login, one core transaction per module, one print per custom format, one report per module.", "",
+		"## 6. Production",
+		"Repeat step 4 on production only when staging is clean. Schedule a backup immediately before.", "",
+		"## 7. Rollback",
+		f"Dashboard → Site → **Backups** → restore the pre-upgrade backup onto a v{source} bench (Frappe Cloud support can move the site back if needed)."]
+	return "\n".join(L)

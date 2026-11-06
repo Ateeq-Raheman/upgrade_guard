@@ -1,0 +1,110 @@
+{
+ "doctype": "DocType",
+ "name": "Upgrade Snapshot",
+ "module": "Upgrade Guard",
+ "autoname": "naming_series:SNAP-.####",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "title",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "label": "Series",
+   "fieldtype": "Select",
+   "options": "SNAP-.####",
+   "default": "SNAP-.####",
+   "hidden": 1
+  },
+  {
+   "fieldname": "title",
+   "label": "Title",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Draft\nRunning\nCompleted\nFailed",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "col",
+   "label": "",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "taken_at",
+   "label": "Taken at",
+   "fieldtype": "Datetime",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "frappe_version",
+   "label": "Frappe version",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sec",
+   "label": "Options",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "report_specs",
+   "label": "Reports to run (one per line)",
+   "fieldtype": "Small Text",
+   "description": "Optional. Format: Report Name  or  Report Name::{\"company\": \"My Co\"}  \u2014 needed for reports that require filters."
+  },
+  {
+   "fieldname": "max_print",
+   "label": "Max custom print formats to render",
+   "fieldtype": "Int",
+   "default": "50"
+  },
+  {
+   "fieldname": "sec2",
+   "label": "Result",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "summary_html",
+   "label": "Summary",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "summary_data",
+   "label": "Summary data",
+   "fieldtype": "Long Text",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "error",
+   "label": "Error",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC"
+}

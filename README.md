@@ -26,7 +26,15 @@ bench get-app <repo-url> && bench --site <site> install-app upgrade_guard
 ```
 Run it on a **staging copy** of your site. Scanning is read-only.
 
-## Use
+## Use from Desk (no shell access needed — e.g. Frappe Cloud)
+1. **Upgrade Readiness Check** → New (current → target version) → **Run scan**. Findings table, verdict, score, effort.
+2. **Fix → Preview auto-fixes** shows safe changes as a diff (applying needs `developer_mode`; on Frappe Cloud apply them in your git repo).
+3. **Report → Upgrade runbook / HTML / Markdown / JSON** downloads a tailored plan or the full report.
+4. **Upgrade Snapshot** → New → **Take snapshot** before the upgrade and again after; **Compare…** lists regressions
+   (record counts, schema, totals, failing custom print formats and reports). Reports needing filters go in *Reports to run*
+   as `Report Name::{"company": "My Co"}`.
+
+## Use from the CLI
 ```bash
 bench --site X upgrade-check   --target 16                 # source auto-detected; --source 13 for older
 bench --site X upgrade-check   --target 16 --format html --out report.html
