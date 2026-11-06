@@ -79,7 +79,7 @@
   },
   {
    "fieldname": "include_official",
-   "label": "Also scan official apps (frappe/erpnext/hrms)",
+   "label": "Also list findings inside official apps (frappe/erpnext/hrms) \u2014 informational, not counted in the verdict",
    "fieldtype": "Check"
   },
   {

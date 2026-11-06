@@ -74,7 +74,7 @@ class Scanner:
 			r["_rx"] = re.compile(r["pattern"])
 		self.installed = frappe.get_installed_apps()
 		self.app_dirs = {a: frappe.get_app_path(a) for a in self.installed}
-		self.apps = apps or [a for a in self.installed if include_official or a not in OFFICIAL_APPS]
+		self.apps = apps or [a for a in self.installed if a != "upgrade_guard" and (include_official or a not in OFFICIAL_APPS)]
 		self.findings, self.stats = [], {"files_scanned": 0, "records_scanned": 0, "truncated": {}}
 		self._counts = {}
 		self._seen = set()
@@ -450,8 +450,8 @@ class Scanner:
 			sev_counts[f["severity"]] += 1
 			pa = per_app.setdefault(f["app"], {s: 0 for s in SEVERITY_ORDER})
 			pa[f["severity"]] += 1
-			if f["manual"]:
-				continue
+			if f["manual"] or (f["app"] in OFFICIAL_APPS and f["rule_id"] != "UG-001"):
+				continue  # official-app source is informational: you cannot fix it, you upgrade it
 			w = SEVERITY_WEIGHT[f["severity"]] * (0.4 if f["confidence"] == "low" else 1)
 			score_penalty += w
 			hours += EFFORT_HOURS[f["severity"]] * (0.2 if f["autofixable"] else 1) * (0.5 if f["confidence"] == "low" else 1)
