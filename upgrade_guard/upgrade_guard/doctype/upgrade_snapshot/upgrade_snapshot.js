@@ -4,7 +4,7 @@ frappe.ui.form.on("Upgrade Snapshot", {
 		frm.get_field("summary_html").$wrapper.html(frm.doc.summary_data || `<p class="text-muted">${__("No results yet.")}</p>`);
 		if (frm.is_new()) return;
 		frm.add_custom_button(frm.doc.status === "Completed" ? __("Re-take snapshot") : __("Take snapshot"), () => {
-			frm.save().then(() => frappe.call({ method: M + "start_snapshot", args: { name: frm.doc.name } }).then(() => frm.reload_doc()));
+			(frm.is_dirty() ? frm.save() : Promise.resolve()).then(() => frappe.call({ method: M + "start_snapshot", args: { name: frm.doc.name } }).then(() => frm.reload_doc()));
 		}).addClass("btn-primary");
 		if (frm.doc.status === "Completed") {
 			frm.add_custom_button(__("Compare…"), () => {

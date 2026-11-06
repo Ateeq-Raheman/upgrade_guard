@@ -5,7 +5,7 @@ frappe.ui.form.on("Upgrade Readiness Check", {
 		if (frm.doc.verdict) frm.dashboard.set_headline(`<span class="indicator-pill ${colors[frm.doc.verdict]}">${frm.doc.verdict}</span> readiness ${frm.doc.score}/100 · ~${frm.doc.estimated_hours} h of fixes`);
 		if (!frm.is_new()) {
 			frm.add_custom_button(frm.doc.status === "Completed" ? __("Re-run scan") : __("Run scan"), () => {
-				frm.save().then(() => frappe.call({ method: "upgrade_guard.upgrade_guard.doctype.upgrade_readiness_check.upgrade_readiness_check.start_scan", args: { name: frm.doc.name } }).then(() => frm.reload_doc()));
+				(frm.is_dirty() ? frm.save() : Promise.resolve()).then(() => frappe.call({ method: "upgrade_guard.upgrade_guard.doctype.upgrade_readiness_check.upgrade_readiness_check.start_scan", args: { name: frm.doc.name } }).then(() => frm.reload_doc()));
 			}).addClass("btn-primary");
 		}
 		if (!frm.is_new() && frm.doc.status === "Completed") {
