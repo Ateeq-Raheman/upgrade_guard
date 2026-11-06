@@ -1,0 +1,6 @@
+hop: {from: 12, to: 13}
+source: https://github.com/frappe/frappe/wiki/Migrating-to-Version-13
+status: complete
+rules:
+- {id: V13-001, title: "Document methods called from client must be whitelisted", severity: blocker, category: python-api, kind: doc_methods_whitelist, fix: "Add @frappe.whitelist() to document methods called via frm.call / frappe.call({doc:..}).", link: "https://frappeframework.com/docs/user/en/api/form#frmcall"}
+- {id: V13-002, title: "Button field options pointing to doc methods must be whitelisted", severity: high, category: doctype, kind: manual, fix: "Whitelist every method referenced from a Button field's options."}

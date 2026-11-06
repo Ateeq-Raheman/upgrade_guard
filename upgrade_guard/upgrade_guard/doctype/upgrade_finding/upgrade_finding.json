@@ -1,0 +1,130 @@
+{
+ "doctype": "DocType",
+ "name": "Upgrade Finding",
+ "module": "Upgrade Guard",
+ "istable": 1,
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "rule_id",
+   "label": "Rule",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "read_only": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "severity",
+   "label": "Severity",
+   "fieldtype": "Select",
+   "options": "blocker\nhigh\nmedium\nlow\ninfo",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "app",
+   "label": "App",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "read_only": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "reference",
+   "label": "File / Record",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "read_only": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "line",
+   "label": "Line",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Open\nFixed\nIgnored",
+   "default": "Open",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "title",
+   "label": "Issue",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "snippet",
+   "label": "Code",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message",
+   "label": "Detail",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fix",
+   "label": "How to fix",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "link",
+   "label": "Reference",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "options": "URL"
+  },
+  {
+   "fieldname": "hop",
+   "label": "Hop",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "category",
+   "label": "Category",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "confidence",
+   "label": "Confidence",
+   "fieldtype": "Select",
+   "options": "high\nmedium\nlow",
+   "read_only": 1
+  },
+  {
+   "fieldname": "loc_type",
+   "label": "Location type",
+   "fieldtype": "Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "autofixable",
+   "label": "Auto-fixable",
+   "fieldtype": "Check",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manual",
+   "label": "Manual check",
+   "fieldtype": "Check",
+   "read_only": 1
+  }
+ ],
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "ASC"
+}

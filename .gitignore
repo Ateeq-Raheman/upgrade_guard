@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+node_modules/
+*.egg-info/
+upgrade_guard/public/dist/
+upgrade_guard_backups/
+.DS_Store

@@ -1,0 +1,195 @@
+{
+ "doctype": "DocType",
+ "name": "Upgrade Readiness Check",
+ "module": "Upgrade Guard",
+ "autoname": "naming_series:URC-.####",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "title",
+ "engine": "InnoDB",
+ "track_changes": 1,
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "label": "Series",
+   "fieldtype": "Select",
+   "options": "URC-.####",
+   "default": "URC-.####",
+   "hidden": 1
+  },
+  {
+   "fieldname": "title",
+   "label": "Title",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_a",
+   "label": "",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Draft\nRunning\nCompleted\nFailed",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "verdict",
+   "label": "Verdict",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "section_cfg",
+   "label": "Scan configuration",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "source_version",
+   "label": "Current version",
+   "fieldtype": "Select",
+   "options": "12\n13\n14\n15",
+   "default": "15",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_version",
+   "label": "Upgrade to",
+   "fieldtype": "Select",
+   "options": "13\n14\n15\n16\n17",
+   "default": "16",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_b",
+   "label": "",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "apps_to_scan",
+   "label": "Apps to scan (comma separated)",
+   "fieldtype": "Small Text",
+   "description": "Leave empty to scan every custom app."
+  },
+  {
+   "fieldname": "include_official",
+   "label": "Also scan official apps (frappe/erpnext/hrms)",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "include_db",
+   "label": "Scan site customizations (Server/Client Scripts, Print Formats, Reports \u2026)",
+   "fieldtype": "Check",
+   "default": "1"
+  },
+  {
+   "fieldname": "section_res",
+   "label": "Result",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "score",
+   "label": "Readiness score",
+   "fieldtype": "Float",
+   "read_only": 1,
+   "precision": "1"
+  },
+  {
+   "fieldname": "estimated_hours",
+   "label": "Estimated fix effort (hours)",
+   "fieldtype": "Float",
+   "read_only": 1,
+   "precision": "1"
+  },
+  {
+   "fieldname": "column_break_c",
+   "label": "",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "blockers",
+   "label": "Blockers",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "high",
+   "label": "High",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "medium",
+   "label": "Medium",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "low",
+   "label": "Low",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "info",
+   "label": "Info",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_sum",
+   "label": "Summary",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "summary_html",
+   "label": "Summary",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "warnings",
+   "label": "Warnings",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_find",
+   "label": "Findings",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "findings",
+   "label": "Findings",
+   "fieldtype": "Table",
+   "options": "Upgrade Finding"
+  },
+  {
+   "fieldname": "scanned_at",
+   "label": "Scanned at",
+   "fieldtype": "Datetime",
+   "read_only": 1,
+   "hidden": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC"
+}
