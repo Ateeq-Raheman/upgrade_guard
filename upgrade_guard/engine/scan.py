@@ -36,11 +36,11 @@ DB_SOURCES = [
 	("Server Script", {"disabled": 0}, [("script", "server_script")]),
 	("Client Script", {"enabled": 1}, [("script", "client_script")]),
 	("Custom HTML Block", {}, [("html", "html"), ("script", "client_script"), ("style", "css")]),
-	("Print Format", {"disabled": 0}, [("html", "db_print"), ("css", "css")]),
+	("Print Format", {"disabled": 0, "standard": "No"}, [("html", "db_print"), ("css", "css")]),
 	("Report", {"is_standard": "No"}, [("javascript", "client_script"), ("report_script", "server_script")]),
-	("Web Form", {}, [("client_script", "client_script"), ("custom_css", "css")]),
+	("Web Form", {"is_standard": 0}, [("client_script", "client_script"), ("custom_css", "css")]),
 	("Web Page", {}, [("main_section", "html"), ("context_script", "server_script"), ("javascript", "client_script"), ("css", "css")]),
-	("Notification", {"enabled": 1}, [("message", "html"), ("condition", "server_script"), ("subject", "html")]),
+	("Notification", {"enabled": 1, "is_standard": 0}, [("message", "html"), ("condition", "server_script"), ("subject", "html")]),
 	("Email Template", {}, [("response", "html")]),
 	("Workflow Transition", {}, [("condition", "server_script")]),
 	("Assignment Rule", {}, [("assign_condition", "server_script"), ("unassign_condition", "server_script"), ("close_condition", "server_script")]),
@@ -362,7 +362,12 @@ class Scanner:
 			self.progress(40 + int(45 * i / total), f"Scanning {dt} records")
 			try:
 				names = [f for f, _ in fields]
-				rows = frappe.get_all(dt, filters=filters, fields=["name"] + names, limit_page_length=0)
+				try:
+					rows = frappe.get_all(dt, filters=filters, fields=["name"] + names, limit_page_length=0)
+				except Exception:
+					# older versions may lack the is_standard/standard column: retry with the base filters
+					base = {k: v for k, v in filters.items() if k not in ("is_standard", "standard")}
+					rows = frappe.get_all(dt, filters=base, fields=["name"] + names, limit_page_length=0)
 			except Exception:
 				continue  # doctype/column does not exist on this version
 			for row in rows:
@@ -381,7 +386,7 @@ class Scanner:
 
 	def _db_classic_print(self):
 		try:
-			rows = frappe.get_all("Print Format", filters={"custom_format": 1, "disabled": 0, "print_format_builder_beta": 0}, fields=["name", "doc_type", "print_format_type"], limit_page_length=0)
+			rows = frappe.get_all("Print Format", filters={"custom_format": 1, "disabled": 0, "standard": "No", "print_format_builder_beta": 0}, fields=["name", "doc_type", "print_format_type"], limit_page_length=0)
 		except Exception:
 			return
 		for row in rows:
@@ -415,7 +420,7 @@ class Scanner:
 		for r in self.by_kind.get("db_filters_json", []):
 			for dt in ("Dashboard Chart", "Number Card"):
 				try:
-					for row in frappe.get_all(dt, fields=["name", "filters_json"], limit_page_length=0):
+					for row in frappe.get_all(dt, filters={"is_standard": 0}, fields=["name", "filters_json"], limit_page_length=0):
 						if self._bad_filters(row.filters_json):
 							self.add(r, "(site customization)", "Record", f"{dt}: {row.name}", 0, str(row.filters_json)[:200])
 				except Exception:
